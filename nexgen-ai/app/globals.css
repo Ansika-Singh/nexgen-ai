@@ -1,0 +1,206 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    /* ── Brand Color Palette (exact from colorPallet.pdf) ── */
+    /* Primary */
+    --forsythia:         #FFC801;   /* primary accent / CTA */
+    --nocturnal:         #114C5A;   /* deep teal / primary dark */
+    --arctic-powder:     #F1F6F4;   /* light background */
+    --mystic-mint:       #D9E8E2;   /* light surface */
+    --deep-saffron:      #FF9932;   /* secondary accent / gradient */
+    --oceanic-noir:      #172B36;   /* darkest background */
+
+    /* Semantic mappings → brand palette */
+    --col-bg:            #0d1e24;   /* near-oceanic-noir */
+    --col-surface:       #112330;   /* between oceanic and nocturnal */
+    --col-card:          #152a35;   /* slightly lifted */
+    --col-border:        #1e3a47;
+    --col-border-hi:     #2a5060;
+
+    /* Accent = Forsythia (brand primary) */
+    --col-accent:        var(--forsythia);     /* #FFC801 */
+    --col-accent-2:      var(--deep-saffron);  /* #FF9932 */
+    --col-accent-glow:   rgba(255, 200, 1, 0.22);
+
+    --col-text-1:        var(--arctic-powder); /* #F1F6F4 */
+    --col-text-2:        var(--mystic-mint);   /* #D9E8E2 */
+    --col-text-3:        #7fa8a8;
+
+    --col-success:       #22d3a0;
+    --col-warning:       var(--forsythia);
+
+    /* ── Typography (from fonts.pdf) ── */
+    --font-display:      'JetBrains Mono', 'Fira Code', monospace; /* headers / code */
+    --font-body:         'Inter', system-ui, sans-serif;           /* body / UI */
+    --font-mono:         'JetBrains Mono', 'Fira Code', monospace;
+
+    /* ── Motion ── */
+    --dur-micro:         150ms;
+    --dur-fast:          200ms;
+    --dur-layout:        350ms;
+    --ease-out:          cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-inout:        cubic-bezier(0.45, 0, 0.55, 1);
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    background-color: var(--col-bg);
+    color: var(--col-text-1);
+    font-family: var(--font-body);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  *:focus-visible {
+    outline: 2px solid var(--col-accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* ─── Scrollbar ───────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--col-bg); }
+::-webkit-scrollbar-thumb { background: var(--col-border-hi); border-radius: 3px; }
+
+/* ─── Utility classes ─────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg, var(--forsythia) 0%, var(--deep-saffron) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.glow-accent {
+  box-shadow: 0 0 40px var(--col-accent-glow);
+}
+
+.glass-card {
+  background: var(--col-card);
+  border: 1px solid var(--col-border);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+}
+
+/* ─── Entry animations ────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.5; }
+  50%       { opacity: 1; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+
+@keyframes scanline {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+/* Gradient animation for brand colors */
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.5s var(--ease-out) forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s var(--ease-out) forwards;
+}
+
+/* ─── Grid bg ─────────────────────────────── */
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(17,76,90,0.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(17,76,90,0.3) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* ─── Noise texture ───────────────────────── */
+.noise::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* ─── Infinite Marquee ────────────────────── */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.marquee-container {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  display: flex;
+  margin: 0 auto;
+  mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+}
+
+.marquee-track {
+  display: flex;
+  gap: 64px;
+  width: max-content;
+  animation: marquee 25s linear infinite;
+  padding: 8px 0;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+.partner-logo {
+  color: var(--col-text-3);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: -0.02em;
+  transition: color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+  cursor: default;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.partner-logo:hover {
+  color: var(--forsythia);
+  transform: scale(1.08);
+}
+

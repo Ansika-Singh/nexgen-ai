@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --forsythia:#FFC801;--nocturnal:#114C5A;--arctic:#F1F6F4;--mystic:#D9E8E2;--saffron:#FF9932;--oceanic:#172B36;
+    --bg:#0d1e24;--surface:#112330;--card:#152a35;--border:#1e3a47;--border-hi:#2a5060;
+    --text1:#F1F6F4;--text2:#D9E8E2;--text3:#7fa8a8;
+    --success:#22d3a0;
+    --mono:'JetBrains Mono',monospace;--body:'Inter',sans-serif;
+    --ease-out:cubic-bezier(0.16,1,0.3,1);--ease-io:cubic-bezier(0.45,0,0.55,1);
+  }
+  body{background:var(--bg);color:var(--text1);font-family:var(--body);line-height:1.6;overflow-x:hidden}
+  a{text-decoration:none;color:inherit}
+  ul{list-style:none}
+  @keyframes pulseGlow{0%,100%{opacity:.5}50%{opacity:1}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes gradShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+  .grad-text{background:linear-gradient(135deg,var(--forsythia) 0%,var(--saffron) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .au{animation:fadeUp .5s var(--ease-out) both}
+  .au1{animation-delay:.08s}.au2{animation-delay:.16s}.au3{animation-delay:.24s}.au4{animation-delay:.32s}.au5{animation-delay:.40s}
+
+  /* NAV */
+  nav{position:sticky;top:0;z-index:100;background:rgba(13,30,36,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+  .nav-inner{max-width:900px;margin:0 auto;padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between}
+  .logo{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-weight:700;font-size:15px}
+  .logo-icon{width:26px;height:26px;background:var(--forsythia);border-radius:5px;display:flex;align-items:center;justify-content:center}
+  .nav-links{display:flex;gap:24px}
+  .nav-links a{font-size:13px;font-weight:500;color:var(--text3);transition:color .2s}
+  .nav-links a:hover{color:var(--text1)}
+  .cta-btn{background:var(--forsythia);color:var(--oceanic);padding:7px 18px;border-radius:7px;font-size:13px;font-weight:700;font-family:var(--body);transition:opacity .2s}
+  .cta-btn:hover{opacity:.88}
+
+  /* HERO */
+  .hero{position:relative;overflow:hidden;text-align:center;padding:80px 20px 60px}
+  .hero-bg{position:absolute;inset:0;pointer-events:none}
+  .grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(17,76,90,.3) 1px,transparent 1px),linear-gradient(90deg,rgba(17,76,90,.3) 1px,transparent 1px);background-size:40px 40px;opacity:.5}
+  .glow1{position:absolute;top:0;left:50%;transform:translateX(-50%);width:700px;height:400px;background:radial-gradient(ellipse,rgba(255,200,1,.13) 0%,rgba(255,153,50,.06) 40%,transparent 70%);filter:blur(24px)}
+  .orb1{position:absolute;top:-60px;right:-60px;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(17,76,90,.35) 0%,transparent 70%)}
+  .hero-inner{position:relative;z-index:1;max-width:780px;margin:0 auto}
+  .eyebrow{display:inline-flex;align-items:center;gap:7px;background:rgba(255,200,1,.08);border:1px solid rgba(255,200,1,.25);border-radius:100px;padding:5px 14px;margin-bottom:22px;font-family:var(--mono);font-size:11px;color:var(--forsythia);letter-spacing:.04em}
+  .pulse{width:6px;height:6px;border-radius:50%;background:var(--success);animation:pulseGlow 2s ease-in-out infinite;display:inline-block}
+  h1{font-family:var(--mono);font-size:clamp(1.9rem,5vw,3.6rem);font-weight:700;line-height:1.08;letter-spacing:-.03em;color:var(--text1);margin-bottom:18px}
+  .sub{font-size:clamp(.95rem,2vw,1.1rem);color:var(--text2);max-width:520px;margin:0 auto 36px;line-height:1.7;font-family:var(--body)}
+  .cta-group{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:48px}
+  .btn-primary{background:var(--forsythia);color:var(--oceanic);padding:12px 28px;border-radius:9px;font-size:14px;font-weight:700;font-family:var(--body);display:inline-flex;align-items:center;gap:7px;transition:transform .2s var(--ease-out),box-shadow .2s}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(255,200,1,.28)}
+  .btn-secondary{background:transparent;color:var(--text1);padding:12px 28px;border-radius:9px;font-size:14px;font-weight:500;font-family:var(--body);border:1px solid var(--border-hi);display:inline-flex;align-items:center;gap:7px;transition:border-color .2s,transform .2s}
+  .btn-secondary:hover{border-color:var(--forsythia);transform:translateY(-2px)}
+
+  /* STATS */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;max-width:580px;margin:0 auto;background:var(--border);border-radius:13px;overflow:hidden;border:1px solid var(--border)}
+  .stat{background:var(--card);padding:16px;text-align:center}
+  .stat-val{font-family:var(--mono);font-weight:700;font-size:1.6rem;color:var(--forsythia);letter-spacing:-.03em}
+  .stat-lbl{font-size:11px;color:var(--text3);margin-top:3px}
+
+  /* TERMINAL */
+  .terminal{margin-top:52px;background:var(--surface);border:1px solid var(--border);border-radius:13px;overflow:hidden;max-width:680px;margin-left:auto;margin-right:auto;text-align:left}
+  .term-bar{display:flex;align-items:center;gap:5px;padding:10px 14px;border-bottom:1px solid var(--border);background:rgba(255,255,255,.02)}
+  .dot{width:11px;height:11px;border-radius:50%;display:inline-block}
+  .term-fname{margin-left:8px;font-family:var(--mono);font-size:11px;color:var(--text3)}
+  pre{padding:20px;font-family:var(--mono);font-size:12px;line-height:1.8;color:var(--text2);overflow:auto}
+
+  /* SECTION */
+  .section{max-width:900px;margin:0 auto;padding:70px 20px}
+  .section-tag{font-family:var(--mono);font-size:10px;font-weight:500;color:var(--forsythia);letter-spacing:.14em;text-transform:uppercase;display:block;margin-bottom:12px;text-align:center}
+  .section-h2{font-family:var(--mono);font-size:clamp(1.4rem,3.5vw,2.2rem);font-weight:700;letter-spacing:-.03em;color:var(--text1);text-align:center;margin-bottom:12px}
+  .section-sub{color:var(--text2);font-family:var(--body);font-size:15px;text-align:center;max-width:440px;margin:0 auto 48px}
+
+  /* LOGOS */
+  .logos-stripe{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:36px 20px}
+  .logos-inner{max-width:900px;margin:0 auto;text-align:center}
+  .logos-row{display:flex;align-items:center;justify-content:center;gap:36px;flex-wrap:wrap;margin-top:24px}
+  .logo-name{font-family:var(--mono);font-weight:700;font-size:13px;color:var(--text3);transition:color .2s}
+  .logo-name:hover{color:var(--mystic)}
+
+  /* BENTO */
+  .bento-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+  .bento-card{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:22px;cursor:default;transition:border-color .2s var(--ease-out),transform .2s var(--ease-out),box-shadow .2s;position:relative;overflow:hidden}
+  .bento-card:hover{border-color:var(--forsythia);transform:translateY(-2px);box-shadow:0 8px 28px rgba(255,200,1,.1)}
+  .bento-card.span2{grid-column:span 2}
+  .feat-icon{width:40px;height:40px;border-radius:9px;background:rgba(255,200,1,.08);display:flex;align-items:center;justify-content:center;margin-bottom:13px;color:var(--forsythia);transition:background .2s}
+  .bento-card:hover .feat-icon{background:rgba(255,200,1,.16)}
+  .feat-tag{font-family:var(--mono);font-size:9px;font-weight:500;color:var(--saffron);letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:6px}
+  .feat-title{font-family:var(--mono);font-size:.95rem;font-weight:700;color:var(--text1);letter-spacing:-.02em;margin-bottom:8px}
+  .feat-desc{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:12px;font-family:var(--body)}
+  .feat-metric{display:inline-block;font-family:var(--mono);font-size:10px;color:var(--success);background:rgba(34,211,160,.08);border:1px solid rgba(34,211,160,.2);border-radius:5px;padding:2px 8px}
+
+  /* PRICING */
+  .pricing-controls{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;margin-bottom:36px}
+  .toggle-group{display:flex;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:100px;padding:4px;position:relative}
+  .toggle-thumb{position:absolute;top:4px;left:4px;width:calc(50% - 4px);height:calc(100% - 8px);background:var(--forsythia);border-radius:100px;transition:transform .2s var(--ease-out);z-index:0}
+  .toggle-btn{background:transparent;border:none;padding:7px 18px;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;position:relative;z-index:1;transition:color .2s;font-family:var(--body)}
+  #t-monthly{color:var(--oceanic)}
+  #t-annual{color:var(--nocturnal)}
+  .save-badge{background:rgba(34,211,160,.1);border:1px solid rgba(34,211,160,.3);color:var(--success);border-radius:100px;padding:4px 12px;font-size:11px;font-weight:600;font-family:var(--mono);opacity:1;transition:opacity .2s}
+  .currency-sel{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:8px 32px 8px 12px;color:var(--text1);font-size:13px;font-weight:600;font-family:var(--mono);cursor:pointer;appearance:none;-webkit-appearance:none}
+  .sel-wrap{position:relative}
+  .sel-chevron{position:absolute;right:9px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none;font-size:11px}
+  .pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+  .price-card{border-radius:17px;padding:26px 22px;position:relative;overflow:hidden;display:flex;flex-direction:column;transition:transform .2s,box-shadow .2s}
+  .price-card:hover{transform:translateY(-3px)}
+  .price-card.std{background:var(--card);border:1px solid var(--border)}
+  .price-card.std:hover{box-shadow:0 8px 28px rgba(0,0,0,.28)}
+  .price-card.hot{background:linear-gradient(145deg,#FFC801 0%,#FF9932 100%);border:1px solid var(--forsythia)}
+  .price-card.hot:hover{box-shadow:0 12px 36px rgba(255,200,1,.25)}
+  .popular-badge{position:absolute;top:16px;right:16px;background:rgba(23,43,54,.3);border-radius:100px;padding:2px 10px;font-size:9px;font-weight:700;color:var(--oceanic);font-family:var(--mono);letter-spacing:.07em}
+  .tier-name{font-family:var(--mono);font-weight:700;font-size:1.1rem;letter-spacing:-.02em;margin-bottom:3px}
+  .tier-tag{font-size:12px;margin-bottom:18px;font-family:var(--body)}
+  .std .tier-name{color:var(--text1)}
+  .std .tier-tag{color:var(--text3)}
+  .hot .tier-name{color:var(--oceanic)}
+  .hot .tier-tag{color:rgba(23,43,54,.7)}
+  .price-val{font-family:var(--mono);font-weight:700;font-size:2.2rem;letter-spacing:-.04em;line-height:1;margin-bottom:2px}
+  .std .price-val{color:var(--forsythia)}
+  .hot .price-val{color:var(--oceanic)}
+  .price-sub{font-size:12px;font-family:var(--body);margin-bottom:22px}
+  .std .price-sub{color:var(--text3)}
+  .hot .price-sub{color:rgba(23,43,54,.6)}
+  .feat-list{flex-grow:1;margin-bottom:20px}
+  .feat-list li{display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:8px;font-family:var(--body)}
+  .std .feat-list li{color:var(--text2)}
+  .hot .feat-list li{color:rgba(23,43,54,.88)}
+  .check-std{color:var(--forsythia)}
+  .check-hot{color:var(--oceanic)}
+  .price-cta{display:block;text-align:center;padding:11px 20px;border-radius:9px;font-size:14px;font-weight:600;transition:opacity .2s,transform .2s;font-family:var(--body)}
+  .std .price-cta{background:transparent;color:var(--text1);border:1px solid var(--border-hi)}
+  .hot .price-cta{background:var(--oceanic);color:var(--forsythia);border:none}
+  .price-cta:hover{opacity:.85;transform:translateY(-1px)}
+
+  /* TESTIMONIALS */
+  .test-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+  .test-card{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:22px;transition:border-color .2s,transform .2s}
+  .test-card:hover{border-color:rgba(255,200,1,.3);transform:translateY(-2px)}
+  .stars{display:flex;gap:3px;margin-bottom:10px}
+  .verified{display:flex;align-items:center;gap:5px;margin-bottom:10px;font-family:var(--mono);font-size:10px;color:var(--success);letter-spacing:.06em}
+  blockquote p{font-size:14px;color:var(--text2);line-height:1.7;font-style:italic;margin-bottom:16px;font-family:var(--body)}
+  .author{display:flex;align-items:center;gap:10px}
+  .avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--nocturnal),var(--oceanic));border:2px solid rgba(255,200,1,.3);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700;font-size:11px;color:var(--forsythia)}
+  .author-name{font-weight:600;font-size:13px;color:var(--text1);font-family:var(--body)}
+  .author-role{font-size:11px;color:var(--text3);font-family:var(--body)}
+
+  /* FOOTER */
+  footer{border-top:1px solid var(--border);background:var(--surface);padding:40px 20px 24px}
+  .foot-inner{max-width:900px;margin:0 auto}
+  .foot-grid{display:grid;grid-template-columns:1.6fr repeat(4,1fr);gap:32px;margin-bottom:40px}
+  .foot-brand-name{font-family:var(--mono);font-weight:700;font-size:14px;color:var(--text1);display:flex;align-items:center;gap:7px;margin-bottom:10px}
+  .foot-desc{font-size:12px;color:var(--text3);line-height:1.7;font-family:var(--body);max-width:180px}
+  .foot-col h4{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
+  .foot-col ul{display:flex;flex-direction:column;gap:8px}
+  .foot-col a{font-size:13px;color:var(--text3);transition:color .2s;font-family:var(--body)}
+  .foot-col a:hover{color:var(--text1)}
+  .foot-bottom{border-top:1px solid var(--border);padding-top:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+  .foot-bottom p{font-size:12px;color:var(--text3);font-family:var(--body)}
+  .foot-mono{font-family:var(--mono);font-size:11px;color:var(--text3)}
+
+  @media(max-width:640px){
+    .bento-grid{grid-template-columns:1fr}
+    .bento-card.span2{grid-column:span 1}
+    .foot-grid{grid-template-columns:1fr 1fr}
+    .stats{grid-template-columns:1fr}
+    .stats{gap:1px}
+  }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+  }
+  .reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Infinite Marquee */
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .marquee-container {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    display: flex;
+    margin: 0 auto;
+    mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+  }
+  .marquee-track {
+    display: flex;
+    gap: 64px;
+    width: max-content;
+    animation: marquee 25s linear infinite;
+    padding: 8px 0;
+  }
+  .marquee-track:hover {
+    animation-play-state: paused;
+  }
+  .partner-logo {
+    color: var(--text3);
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: -0.02em;
+    transition: color 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: default;
+    user-select: none;
+    white-space: nowrap;
+  }
+  .partner-logo:hover {
+    color: var(--forsythia);
+    transform: scale(1.08);
+  }
+</style>
+<h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">NexGen AI landing page preview — AI-driven data automation platform</h2>
+
+<!-- NAV -->
+<header>
+<nav>
+  <div class="nav-inner">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path fill="#172B36" d="M8.372 3.349a.75.75 0 0 0-.744 0L2.818 6.097 8 9.131l5.182-3.034zM14 7.357L8.75 10.43v4.005l4.872-2.784A.75.75 0 0 0 14 11zm-6.75 7.078V10.43L2 7.357V11c0 .27.144.518.378.651z"/></svg>
+      </div>
+      <span>NexGen<span style="color:var(--forsythia)">AI</span></span>
+    </div>
+    <div class="nav-links">
+      <a href="#features-sec">Features</a>
+      <a href="#pricing-sec">Pricing</a>
+      <a href="#testimonials-sec">Reviews</a>
+    </div>
+    <a class="cta-btn" href="#pricing-sec">Get started</a>
+  </div>
+</nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg" aria-hidden="true">
+    <div class="grid-bg"></div>
+    <div class="glow1"></div>
+    <div class="orb1"></div>
+  </div>
+  <div class="hero-inner">
+    <div class="eyebrow au au1"><span class="pulse"></span> Now in public beta · 2,400+ teams onboarded</div>
+    <h1 class="au au2">Data Pipelines That <span class="grad-text">Think for Themselves</span></h1>
+    <p class="sub au au3">NexGen AI orchestrates, transforms, and deploys your enterprise data workflows with sub-second latency — no config files, no manual tuning, no ops overhead.</p>
+    <div class="cta-group au au4">
+      <a href="#pricing-sec" class="btn-primary">
+        Start building free
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg>
+      </a>
+      <a href="#features-sec" class="btn-secondary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 18 9 11.25l4.306 4.307a11.95 11.95 0 0 1 5.814-5.519l2.74-1.22m0 0-5.94-2.28m5.94 2.28-2.28 5.941"/></svg>
+        See demo
+      </a>
+    </div>
+    <div class="stats au au5">
+      <div class="stat"><div class="stat-val">99.97%</div><div class="stat-lbl">Uptime SLA</div></div>
+      <div class="stat"><div class="stat-val">&lt;8ms</div><div class="stat-lbl">Median latency</div></div>
+      <div class="stat"><div class="stat-val">2.4M+</div><div class="stat-lbl">Pipelines / day</div></div>
+    </div>
+    <figure class="terminal au" style="animation-delay:.48s" aria-label="Code preview">
+      <div class="term-bar">
+        <span class="dot" style="background:#ff5f57"></span>
+        <span class="dot" style="background:#febc2e"></span>
+        <span class="dot" style="background:#28c840"></span>
+        <span class="term-fname">pipeline.nexgen.ts</span>
+      </div>
+      <pre><code><span style="color:var(--text3)">import</span> { pipeline } <span style="color:var(--text3)">from</span> <span style="color:var(--success)">"@nexgen/core"</span>;
+
+<span style="color:var(--text3)">const</span> etl = pipeline({
+  source: sources.postgres({ table: <span style="color:var(--success)">"events"</span> }),
+  transform: [
+    ai.classify({ model: <span style="color:var(--success)">"nexgen-v3"</span> }),
+    ai.enrich({ lookup: <span style="color:var(--success)">"customer_profiles"</span> }),
+  ],
+  sink: sinks.bigquery({ dataset: <span style="color:var(--success)">"analytics_prod"</span> }),
+  schedule: <span style="color:var(--success)">"*/5 * * * *"</span>,
+});
+
+await etl.<span style="color:var(--forsythia)">deploy</span>(); <span style="color:var(--text3)">// ✓ Live in 1.2s</span></code></pre>
+    </figure>
+  </div>
+</section>
+
+<!-- LOGO STRIP -->
+<div class="logos-stripe reveal">
+  <div class="logos-inner">
+    <p style="font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:36px">Trusted by teams at</p>
+    <div class="marquee-container">
+      <div class="marquee-track">
+        <span class="partner-logo">Stripe</span>
+        <span class="partner-logo">Linear</span>
+        <span class="partner-logo">Vercel</span>
+        <span class="partner-logo">Notion</span>
+        <span class="partner-logo">Figma</span>
+        <span class="partner-logo">Supabase</span>
+        <!-- Duplicated for seamless loop -->
+        <span class="partner-logo">Stripe</span>
+        <span class="partner-logo">Linear</span>
+        <span class="partner-logo">Vercel</span>
+        <span class="partner-logo">Notion</span>
+        <span class="partner-logo">Figma</span>
+        <span class="partner-logo">Supabase</span>
+        <!-- Triplicated for wide viewports loop -->
+        <span class="partner-logo">Stripe</span>
+        <span class="partner-logo">Linear</span>
+        <span class="partner-logo">Vercel</span>
+        <span class="partner-logo">Notion</span>
+        <span class="partner-logo">Figma</span>
+        <span class="partner-logo">Supabase</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="section" id="features-sec">
+  <span class="section-tag reveal">Platform capabilities</span>
+  <h2 class="section-h2 reveal" data-delay="80">Everything your data stack needs</h2>
+  <p class="section-sub reveal" data-delay="160">From ingestion to insight, NexGen handles every layer of your data infrastructure with zero-ops intelligence.</p>
+  <div class="bento-grid" role="list" aria-label="Platform features">
+    <article class="bento-card span2 reveal" data-delay="0" role="listitem" aria-label="Zero-Config Pipeline Builder">
+      <div class="feat-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor"><path d="M8.372 3.349a.75.75 0 0 0-.744 0L2.818 6.097 8 9.131l5.182-3.034zM14 7.357L8.75 10.43v4.005l4.872-2.784A.75.75 0 0 0 14 11zm-6.75 7.078V10.43L2 7.357V11c0 .27.144.518.378.651z"/></svg>
+      </div>
+      <span class="feat-tag">Orchestration</span>
+      <h3 class="feat-title">Zero-Config Pipeline Builder</h3>
+      <p class="feat-desc">Define sources, transforms, and sinks in TypeScript. NexGen infers schemas, validates types at the edge, and auto-provisions compute — no YAML, no infra work.</p>
+      <span class="feat-metric">80% less config</span>
+    </article>
+    <article class="bento-card reveal" data-delay="100" role="listitem" aria-label="Adaptive Model Routing">
+      <div class="feat-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z"/><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z"/></svg>
+      </div>
+      <span class="feat-tag">Intelligence</span>
+      <h3 class="feat-title">Adaptive Model Routing</h3>
+      <p class="feat-desc">Built-in model registry selects the optimal AI model per workload automatically.</p>
+      <span class="feat-metric">3× faster inference</span>
+    </article>
+    <article class="bento-card reveal" data-delay="200" role="listitem" aria-label="Real-Time Trace and Debug">
+      <div class="feat-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 18 9 11.25l4.306 4.307a11.95 11.95 0 0 1 5.814-5.519l2.74-1.22m0 0-5.94-2.28m5.94 2.28-2.28 5.941"/></svg>
+      </div>
+      <span class="feat-tag">Observability</span>
+      <h3 class="feat-title">Real-Time Trace & Debug</h3>
+      <p class="feat-desc">Every event and model call is captured in an immutable trace log with sub-ms graphs.</p>
+      <span class="feat-metric">Full lineage visibility</span>
+    </article>
+    <article class="bento-card reveal" data-delay="300" role="listitem" aria-label="Global Edge Execution">
+      <div class="feat-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
+      </div>
+      <span class="feat-tag">Scale</span>
+      <h3 class="feat-title">Global Edge Execution</h3>
+      <p class="feat-desc">28 regions, zero cold-start, auto-scales to millions of events per second.</p>
+      <span class="feat-metric">28 regions · &lt;8ms p99</span>
+    </article>
+    <article class="bento-card reveal" data-delay="400" role="listitem" aria-label="200 Plus Native Connectors">
+      <div class="feat-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244"/></svg>
+      </div>
+      <span class="feat-tag">Integration</span>
+      <h3 class="feat-title">200+ Native Connectors</h3>
+      <p class="feat-desc">Postgres, Snowflake, BigQuery, S3, Kafka and 190+ more with one-line config.</p>
+      <span class="feat-metric">200+ connectors</span>
+    </article>
+    <article class="bento-card span2 reveal" data-delay="500" role="listitem" aria-label="SOC 2 Compliance">
+      <div class="feat-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><g stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><path d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93c.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 0 1 1.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204c.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78c-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 0 1-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107c-.397.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93c-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 0 1-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204c-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78c.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 0 1 .12-1.45l.773-.773a1.125 1.125 0 0 1 1.45-.12l.737.527c.35.25.807.272 1.204.107c.397-.165.71-.505.78-.929l.15-.894Z"/><path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></g></svg>
+      </div>
+      <span class="feat-tag">Compliance</span>
+      <h3 class="feat-title">SOC 2 Type II Native</h3>
+      <p class="feat-desc">End-to-end encryption, data residency controls, automated audit trails, and role-based access — compliance baked into every pipeline by default. GDPR and HIPAA ready out of the box.</p>
+      <span class="feat-metric">SOC 2 · GDPR · HIPAA</span>
+    </article>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="section" id="pricing-sec" style="padding-top:0">
+  <span class="section-tag reveal">Pricing</span>
+  <h2 class="section-h2 reveal" data-delay="80">Simple, predictable pricing</h2>
+  <p class="section-sub reveal" data-delay="160">No hidden fees. No surprise bills. Scale only when you need to.</p>
+  <div class="pricing-controls reveal" data-delay="240">
+    <div class="toggle-group" role="group" aria-label="Billing cycle">
+      <div class="toggle-thumb" id="toggle-thumb" aria-hidden="true"></div>
+      <button class="toggle-btn" id="t-monthly" role="radio" aria-checked="true" onclick="setBilling('monthly')">Monthly</button>
+      <button class="toggle-btn" id="t-annual" role="radio" aria-checked="false" onclick="setBilling('annual')">Annual</button>
+    </div>
+    <div class="save-badge" id="save-badge" aria-live="polite">Save 20%</div>
+    <div class="sel-wrap">
+      <label for="cur-sel" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Currency</label>
+      <select class="currency-sel" id="cur-sel" onchange="updatePrices()">
+        <option value="USD">$ USD</option>
+        <option value="INR">₹ INR</option>
+        <option value="EUR">€ EUR</option>
+      </select>
+      <span class="sel-chevron" aria-hidden="true">▾</span>
+    </div>
+  </div>
+  <div class="pricing-grid" role="list" aria-label="Pricing tiers">
+    <article class="price-card std reveal" data-delay="0" role="listitem" aria-label="Starter plan">
+      <h3 class="tier-name">Starter</h3>
+      <p class="tier-tag">For solo builders</p>
+      <div class="price-val" id="price-starter">Free</div>
+      <span class="price-sub" id="price-sub-starter">&nbsp;</span>
+      <ul class="feat-list" role="list">
+        <li><svg width="14" height="14" viewBox="0 0 16 16" fill="none" class="check-std" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="rgba(255,200,1,.1)"/><path d="M5 8L7 10L11 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>5 pipelines</li>
+        <li><svg width="14" height="14" viewBox="0 0 16 16" fill="none" class="check-std" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="rgba(255,200,1,.1)"/><path d="M5 8L7 10L11 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>1M events / month</li>
+        <li><svg width="14" height="14" viewBox="0 0 16 16" fill="none" class="check-std" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="rgba(255,200,1,.1)"/><path d="M5 8L7 10L11 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Community support</li>
+        <li><svg width="14" height="14" viewBox="0 0 16 16" fill="none" class="check-std" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="rgba(255,200,1,.1)"/><path d="M5 8L7 10L11 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>1 team member</li>
+      </ul>
+      <a href="#" class="price-cta">Start free</a>
+    </article>
+    <article class="price-card hot reveal" data-delay="150" role="listitem" aria-label="Pro plan">
+      <div class="popular-badge">MOST POPULAR</div>
+      <h3 class="tier-name">Pro</h3>
+      <p class="tier-tag">For growing teams</p>
+      <div class="price-val" id="price-pro">$49</div>
+      <span class="price-sub" id="price-sub-pro">/ month</span>
+      <ul class="feat-list" role="list">
+        <li><svg width="14" height="14" viewBox="0 0 16 16" fill="none" class="check-hot" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="rgba(23,43,54,.2)"/><path d="M5 8L7 10L11 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Unlimited pipelines</li>
+        <li><svg width="14" height="14" viewBox="0 0 16 16" fill="none" class="check-hot" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="rgba(23,43,54,.2)"/><path d="M5 8L7 10L11 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>50M events / month</li>
+        <li><svg width="14" height="14" viewBox="0 0 16 16" fill="none" class="check-hot" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="rgba(23,43,54,.2)"/><path d="M5 8L7 10L11 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Priority email support</li>
+        <li><svg width="14" height="14" viewBox="0 0 16 16" fill="none" class="check-hot" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="rgba(23,43,54,.2)"/><path d="M5 8L7 10L11 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>10 team members</li>
+        <li><svg width="14" height="14" viewBox="0 0 16 16" fill="none" class="check-hot" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="rgba(23,43,54,.2)"/><path d="M5 8L7 10L11 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Full trace & debug</li>
+      </ul>
+      <a href="#" class="price-cta">Start 14-day trial</a>
+    </article>
+    <article class="price-card std reveal" data-delay="300" role="listitem" aria-label="Enterprise plan">
+      <h3 class="tier-name">Enterprise</h3>
+      <p class="tier-tag">For production scale</p>
+      <div class="price-val" id="price-enterprise">$199</div>
+      <span class="price-sub" id="price-sub-enterprise">/ month</span>
+      <ul class="feat-list" role="list">
+        <li><svg width="14" height="14" viewBox="0 0 16 16" fill="none" class="check-std" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="rgba(255,200,1,.1)"/><path d="M5 8L7 10L11 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Unlimited everything</li>
+        <li><svg width="14" height="14" viewBox="0 0 16 16" fill="none" class="check-std" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="rgba(255,200,1,.1)"/><path d="M5 8L7 10L11 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>5B+ events / month</li>
+        <li><svg width="14" height="14" viewBox="0 0 16 16" fill="none" class="check-std" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="rgba(255,200,1,.1)"/><path d="M5 8L7 10L11 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Dedicated SRE team</li>
+        <li><svg width="14" height="14" viewBox="0 0 16 16" fill="none" class="check-std" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="rgba(255,200,1,.1)"/><path d="M5 8L7 10L11 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>SOC 2 & HIPAA ready</li>
+        <li><svg width="14" height="14" viewBox="0 0 16 16" fill="none" class="check-std" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="rgba(255,200,1,.1)"/><path d="M5 8L7 10L11 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>SLA-backed uptime</li>
+      </ul>
+      <a href="#" class="price-cta">Talk to sales</a>
+    </article>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section" id="testimonials-sec" style="padding-top:0">
+  <h2 class="section-h2 reveal">What engineering teams say</h2>
+  <div style="margin-bottom:40px"></div>
+  <div class="test-grid" role="list">
+    <figure class="test-card reveal" data-delay="0" role="listitem">
+      <div class="stars" aria-label="5 stars">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="#FFC801" aria-hidden="true"><path d="M7 1L8.8 5.3H13.3L9.8 8L11 12.5L7 9.8L3 12.5L4.2 8L.7 5.3H5.2Z"/></svg>
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="#FFC801" aria-hidden="true"><path d="M7 1L8.8 5.3H13.3L9.8 8L11 12.5L7 9.8L3 12.5L4.2 8L.7 5.3H5.2Z"/></svg>
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="#FFC801" aria-hidden="true"><path d="M7 1L8.8 5.3H13.3L9.8 8L11 12.5L7 9.8L3 12.5L4.2 8L.7 5.3H5.2Z"/></svg>
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="#FFC801" aria-hidden="true"><path d="M7 1L8.8 5.3H13.3L9.8 8L11 12.5L7 9.8L3 12.5L4.2 8L.7 5.3H5.2Z"/></svg>
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="#FFC801" aria-hidden="true"><path d="M7 1L8.8 5.3H13.3L9.8 8L11 12.5L7 9.8L3 12.5L4.2 8L.7 5.3H5.2Z"/></svg>
+      </div>
+      <div class="verified">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 18 9 11.25l4.306 4.307a11.95 11.95 0 0 1 5.814-5.519l2.74-1.22m0 0-5.94-2.28m5.94 2.28-2.28 5.941"/></svg>
+        VERIFIED CUSTOMER
+      </div>
+      <blockquote><p>"We cut our ETL pipeline build time from 3 weeks to 4 hours. NexGen's adaptive routing alone saved us two dedicated data engineers."</p></blockquote>
+      <figcaption class="author">
+        <div class="avatar">PM</div>
+        <div>
+          <div class="author-name">Priya Mehta</div>
+          <div class="author-role">Head of Data Engineering, Razorpay</div>
+        </div>
+      </figcaption>
+    </figure>
+    <figure class="test-card reveal" data-delay="150" role="listitem">
+      <div class="stars" aria-label="5 stars">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="#FFC801" aria-hidden="true"><path d="M7 1L8.8 5.3H13.3L9.8 8L11 12.5L7 9.8L3 12.5L4.2 8L.7 5.3H5.2Z"/></svg>
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="#FFC801" aria-hidden="true"><path d="M7 1L8.8 5.3H13.3L9.8 8L11 12.5L7 9.8L3 12.5L4.2 8L.7 5.3H5.2Z"/></svg>
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="#FFC801" aria-hidden="true"><path d="M7 1L8.8 5.3H13.3L9.8 8L11 12.5L7 9.8L3 12.5L4.2 8L.7 5.3H5.2Z"/></svg>
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="#FFC801" aria-hidden="true"><path d="M7 1L8.8 5.3H13.3L9.8 8L11 12.5L7 9.8L3 12.5L4.2 8L.7 5.3H5.2Z"/></svg>
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="#FFC801" aria-hidden="true"><path d="M7 1L8.8 5.3H13.3L9.8 8L11 12.5L7 9.8L3 12.5L4.2 8L.7 5.3H5.2Z"/></svg>
+      </div>
+      <div class="verified">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 18 9 11.25l4.306 4.307a11.95 11.95 0 0 1 5.814-5.519l2.74-1.22m0 0-5.94-2.28m5.94 2.28-2.28 5.941"/></svg>
+        VERIFIED CUSTOMER
+      </div>
+      <blockquote><p>"The state isolation in their pricing engine is genuinely impressive. Switching currencies doesn't flicker the rest of the page — something our own team couldn't achieve."</p></blockquote>
+      <figcaption class="author">
+        <div class="avatar">MS</div>
+        <div>
+          <div class="author-name">Marcus Schmidt</div>
+          <div class="author-role">VP Engineering, N26</div>
+        </div>
+      </figcaption>
+    </figure>
+    <figure class="test-card reveal" data-delay="300" role="listitem">
+      <div class="stars" aria-label="5 stars">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="#FFC801" aria-hidden="true"><path d="M7 1L8.8 5.3H13.3L9.8 8L11 12.5L7 9.8L3 12.5L4.2 8L.7 5.3H5.2Z"/></svg>
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="#FFC801" aria-hidden="true"><path d="M7 1L8.8 5.3H13.3L9.8 8L11 12.5L7 9.8L3 12.5L4.2 8L.7 5.3H5.2Z"/></svg>
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="#FFC801" aria-hidden="true"><path d="M7 1L8.8 5.3H13.3L9.8 8L11 12.5L7 9.8L3 12.5L4.2 8L.7 5.3H5.2Z"/></svg>
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="#FFC801" aria-hidden="true"><path d="M7 1L8.8 5.3H13.3L9.8 8L11 12.5L7 9.8L3 12.5L4.2 8L.7 5.3H5.2Z"/></svg>
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="#FFC801" aria-hidden="true"><path d="M7 1L8.8 5.3H13.3L9.8 8L11 12.5L7 9.8L3 12.5L4.2 8L.7 5.3H5.2Z"/></svg>
+      </div>
+      <div class="verified">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 18 9 11.25l4.306 4.307a11.95 11.95 0 0 1 5.814-5.519l2.74-1.22m0 0-5.94-2.28m5.94 2.28-2.28 5.941"/></svg>
+        VERIFIED CUSTOMER
+      </div>
+      <blockquote><p>"SOC 2 compliance was a 6-month project at our last company. With NexGen, we got our audit report in 3 weeks. It's compliance as code."</p></blockquote>
+      <figcaption class="author">
+        <div class="avatar">AT</div>
+        <div>
+          <div class="author-name">Akira Tanaka</div>
+          <div class="author-role">CTO, Gojek</div>
+        </div>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-inner">
+    <div class="foot-grid">
+      <div>
+        <div class="foot-brand-name">
+          <div class="logo-icon" style="width:22px;height:22px">
+            <svg width="12" height="12" viewBox="0 0 16 16" aria-hidden="true"><path fill="#172B36" d="M8.372 3.349a.75.75 0 0 0-.744 0L2.818 6.097 8 9.131l5.182-3.034zM14 7.357L8.75 10.43v4.005l4.872-2.784A.75.75 0 0 0 14 11zm-6.75 7.078V10.43L2 7.357V11c0 .27.144.518.378.651z"/></svg>
+          </div>
+          NexGen<span style="color:var(--forsythia)">AI</span>
+        </div>
+        <p class="foot-desc">AI-native data automation for engineering teams that move fast.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Product</h4>
+        <ul><li><a href="#">Features</a></li><li><a href="#">Pricing</a></li><li><a href="#">Changelog</a></li><li><a href="#">Roadmap</a></li></ul>
+      </div>
+      <div class="foot-col">
+        <h4>Developers</h4>
+        <ul><li><a href="#">Documentation</a></li><li><a href="#">API Reference</a></li><li><a href="#">SDKs</a></li><li><a href="#">Status</a></li></ul>
+      </div>
+      <div class="foot-col">
+        <h4>Company</h4>
+        <ul><li><a href="#">About</a></li><li><a href="#">Blog</a></li><li><a href="#">Careers</a></li><li><a href="#">Press</a></li></ul>
+      </div>
+      <div class="foot-col">
+        <h4>Legal</h4>
+        <ul><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li><li><a href="#">Security</a></li><li><a href="#">Cookies</a></li></ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <p>© 2026 NexGen AI, Inc. All rights reserved.</p>
+      <span class="foot-mono">Forsythia #FFC801 · JetBrains Mono · Inter</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+const MATRIX={tariffs:{INR:83.12,USD:1,EUR:.92},rounding:{INR:100,USD:1,EUR:1},symbols:{INR:'₹',USD:'$',EUR:'€'},tiers:{pro:{base:49},enterprise:{base:199}},disc:.8};
+let billing='monthly',currency='USD';
+function computePrice(tier,b,c){const base=MATRIX.tiers[tier].base,tariff=MATRIX.tariffs[c],disc=b==='annual'?MATRIX.disc:1,raw=b==='annual'?(base*tariff*disc*12):(base*tariff),rounded=Math.round(raw/MATRIX.rounding[c])*MATRIX.rounding[c];return MATRIX.symbols[c]+rounded.toLocaleString()}
+function updatePrices(){
+  ['pro','enterprise'].forEach(t=>{
+    const el=document.getElementById('price-'+t);if(el)el.textContent=computePrice(t,billing,currency);
+    const sub=document.getElementById('price-sub-'+t);if(sub)sub.textContent=billing==='annual'?'/ year':'/ month';
+  });
+}
+function setBilling(b){
+  billing=b;
+  const thumb=document.getElementById('toggle-thumb'),tm=document.getElementById('t-monthly'),ta=document.getElementById('t-annual');
+  if(b==='annual'){thumb.style.transform='translateX(calc(100% + 4px))';tm.style.color='var(--nocturnal)';ta.style.color='var(--oceanic)';}
+  else{thumb.style.transform='translateX(0)';tm.style.color='var(--oceanic)';ta.style.color='var(--nocturnal)';}
+  updatePrices();
+}
+document.getElementById('cur-sel').addEventListener('change',function(){currency=this.value;updatePrices();});
+
+// Intersection Observer for scroll reveal animations
+document.addEventListener("DOMContentLoaded", () => {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const delay = parseInt(entry.target.dataset.delay || "0", 10);
+        setTimeout(() => {
+          entry.target.classList.add("active");
+        }, delay);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.1,
+    rootMargin: "0px 0px -50px 0px"
+  });
+  
+  document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+});
+</script>

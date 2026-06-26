@@ -1,0 +1,9 @@
+nexgen-ai/node_modules/
+nexgen-ai/.next/
+nexgen-ai/out/
+nexgen-ai/.env
+nexgen-ai/.env.local
+nexgen-ai/*.log
+nexgen-ai-hackathon.zip
+.agents/
+.gemini/
