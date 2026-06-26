@@ -183,88 +183,87 @@ export default function Features() {
         </header>
       </ScrollReveal>
 
-      {/* ── BENTO GRID — desktop (>768px) ── */}
-      {!isMobile && (
-        <div
-          role="list"
-          aria-label="Platform features"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: 16,
-          }}
-        >
-          {FEATURES.map((feat, idx) => {
-            const isActive = activeIndex === idx;
-            return (
-              <ScrollReveal
-                key={feat.id}
-                delay={idx * 100}
-                style={{ ...BENTO_CONFIG[idx] }}
+      {/* ── ACCORDION — option wise, click to expand ── */}
+      <div role="list" aria-label="Platform features">
+        {FEATURES.map((feat, idx) => {
+          const isOpen = activeIndex === idx;
+          return (
+            <ScrollReveal
+              key={feat.id}
+              delay={idx * 80}
+            >
+              <div
+                role="listitem"
+                style={{
+                  border: `1px solid ${isOpen ? "var(--forsythia)" : "var(--col-border)"}`,
+                  borderRadius: 12,
+                  marginBottom: 8,
+                  overflow: "hidden",
+                  transition: `border-color var(--dur-fast) var(--ease-out)`,
+                }}
               >
-                <article
-                  role="listitem"
-                  aria-label={feat.title}
+                <button
+                  aria-expanded={isOpen}
+                  aria-controls={`feat-panel-${idx}`}
+                  id={`feat-btn-${idx}`}
+                  onClick={() => toggleAccordion(idx)}
                   style={{
                     width: "100%",
-                    height: "100%",
-                    background: "var(--col-card)",
-                    border: `1px solid ${isActive ? "var(--forsythia)" : "var(--col-border)"}`,
-                    borderRadius: 16,
-                    padding: "28px 28px 24px",
-                    cursor: "default",
-                    transition: `border-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out)`,
-                    transform: isActive ? "translateY(-2px)" : "translateY(0)",
-                    boxShadow: isActive ? "0 8px 32px rgba(255,200,1,0.12)" : "none",
-                    position: "relative",
-                    overflow: "hidden",
+                    background: isOpen ? "rgba(255,200,1,0.05)" : "var(--col-card)",
+                    border: "none",
+                    padding: "18px 20px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    cursor: "pointer",
+                    textAlign: "left",
+                    transition: `background var(--dur-fast) var(--ease-out)`,
                   }}
-                  onMouseEnter={() => handleBentoHover(idx)}
-                  onMouseLeave={() => handleBentoHover(null)}
                 >
-                  {isActive && (
-                    <div aria-hidden="true" style={{
-                      position: "absolute",
-                      inset: 0,
-                      background: "radial-gradient(ellipse at top left, rgba(255,200,1,0.05) 0%, transparent 70%)",
-                      pointerEvents: "none",
-                    }} />
-                  )}
-                  <div style={{ position: "relative", zIndex: 1 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
                     <div style={{
-                      width: 44, height: 44,
-                      borderRadius: 10,
-                      background: isActive ? "rgba(255,200,1,0.18)" : "rgba(255,200,1,0.08)",
+                      width: 36, height: 36,
+                      borderRadius: 8,
+                      background: "rgba(255,200,1,0.1)",
                       display: "flex", alignItems: "center", justifyContent: "center",
-                      marginBottom: 16,
+                      flexShrink: 0,
                       color: "var(--forsythia)",
-                      transition: `background var(--dur-fast) var(--ease-out)`,
                     }}>
                       <feat.Icon />
                     </div>
-                    <span style={{
-                      fontFamily: "var(--font-mono)",
-                      fontSize: 10,
-                      fontWeight: 500,
-                      color: "var(--deep-saffron)",
-                      letterSpacing: "0.1em",
-                      textTransform: "uppercase",
-                      display: "block",
-                      marginBottom: 8,
-                    }}>
-                      {feat.tag}
-                    </span>
-                    <h3 style={{
-                      fontFamily: "var(--font-display)",
-                      fontSize: "1.05rem",
-                      fontWeight: 700,
-                      color: "var(--col-text-1)",
-                      letterSpacing: "-0.02em",
-                      marginBottom: 10,
-                    }}>
-                      {feat.title}
-                    </h3>
-                    <p style={{ fontSize: 14, color: "var(--col-text-2)", lineHeight: 1.65, marginBottom: 16, fontFamily: "var(--font-body)" }}>
+                    <div>
+                      <span style={{ fontSize: 10, fontFamily: "var(--font-mono)", color: "var(--deep-saffron)", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                        {feat.tag}
+                      </span>
+                      <div style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 15, color: "var(--col-text-1)", letterSpacing: "-0.01em" }}>
+                        {feat.title}
+                      </div>
+                    </div>
+                  </div>
+                  <span style={{
+                    display: "inline-block",
+                    transition: `transform var(--dur-layout) var(--ease-inout)`,
+                    transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+                    flexShrink: 0,
+                    color: "var(--col-text-3)",
+                  }}>
+                    <ChevronDown />
+                  </span>
+                </button>
+
+                {/* Accordion panel — pure CSS max-height, no JS libs */}
+                <div
+                  id={`feat-panel-${idx}`}
+                  role="region"
+                  aria-labelledby={`feat-btn-${idx}`}
+                  style={{
+                    overflow: "hidden",
+                    maxHeight: isOpen ? "280px" : "0",
+                    transition: `max-height var(--dur-layout) var(--ease-inout)`,
+                  }}
+                >
+                  <div style={{ padding: "0 20px 20px", background: "var(--col-card)" }}>
+                    <p style={{ fontSize: 14, color: "var(--col-text-2)", lineHeight: 1.65, marginBottom: 14, fontFamily: "var(--font-body)" }}>
                       {feat.desc}
                     </p>
                     <div style={{
@@ -280,117 +279,12 @@ export default function Features() {
                       {feat.metric}
                     </div>
                   </div>
-                </article>
-              </ScrollReveal>
-            );
-          })}
-        </div>
-      )}
-
-      {/* ── ACCORDION — mobile (≤768px) — zero external deps ── */}
-      {isMobile && (
-        <div role="list" aria-label="Platform features">
-          {FEATURES.map((feat, idx) => {
-            const isOpen = activeIndex === idx;
-            return (
-              <ScrollReveal
-                key={feat.id}
-                delay={idx * 80}
-              >
-                <div
-                  role="listitem"
-                  style={{
-                    border: `1px solid ${isOpen ? "var(--forsythia)" : "var(--col-border)"}`,
-                    borderRadius: 12,
-                    marginBottom: 8,
-                    overflow: "hidden",
-                    transition: `border-color var(--dur-fast) var(--ease-out)`,
-                  }}
-                >
-                  <button
-                    aria-expanded={isOpen}
-                    aria-controls={`feat-panel-${idx}`}
-                    id={`feat-btn-${idx}`}
-                    onClick={() => toggleAccordion(idx)}
-                    style={{
-                      width: "100%",
-                      background: isOpen ? "rgba(255,200,1,0.05)" : "var(--col-card)",
-                      border: "none",
-                      padding: "18px 20px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      cursor: "pointer",
-                      textAlign: "left",
-                      transition: `background var(--dur-fast) var(--ease-out)`,
-                    }}
-                  >
-                    <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-                      <div style={{
-                        width: 36, height: 36,
-                        borderRadius: 8,
-                        background: "rgba(255,200,1,0.1)",
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                        flexShrink: 0,
-                        color: "var(--forsythia)",
-                      }}>
-                        <feat.Icon />
-                      </div>
-                      <div>
-                        <span style={{ fontSize: 10, fontFamily: "var(--font-mono)", color: "var(--deep-saffron)", textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                          {feat.tag}
-                        </span>
-                        <div style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 15, color: "var(--col-text-1)", letterSpacing: "-0.01em" }}>
-                          {feat.title}
-                        </div>
-                      </div>
-                    </div>
-                    <span style={{
-                      display: "inline-block",
-                      transition: `transform var(--dur-layout) var(--ease-inout)`,
-                      transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
-                      flexShrink: 0,
-                      color: "var(--col-text-3)",
-                    }}>
-                      <ChevronDown />
-                    </span>
-                  </button>
-
-                  {/* Accordion panel — pure CSS max-height, no JS libs */}
-                  <div
-                    id={`feat-panel-${idx}`}
-                    role="region"
-                    aria-labelledby={`feat-btn-${idx}`}
-                    style={{
-                      overflow: "hidden",
-                      maxHeight: isOpen ? "280px" : "0",
-                      transition: `max-height var(--dur-layout) var(--ease-inout)`,
-                    }}
-                  >
-                    <div style={{ padding: "0 20px 20px", background: "var(--col-card)" }}>
-                      <p style={{ fontSize: 14, color: "var(--col-text-2)", lineHeight: 1.65, marginBottom: 14, fontFamily: "var(--font-body)" }}>
-                        {feat.desc}
-                      </p>
-                      <div style={{
-                        display: "inline-block",
-                        fontFamily: "var(--font-mono)",
-                        fontSize: 11,
-                        color: "var(--col-success)",
-                        background: "rgba(34,211,160,0.08)",
-                        border: "1px solid rgba(34,211,160,0.2)",
-                        borderRadius: 6,
-                        padding: "3px 10px",
-                      }}>
-                        {feat.metric}
-                      </div>
-                    </div>
-                  </div>
                 </div>
-              </ScrollReveal>
-            );
-          })}
-        </div>
-      )}
+              </div>
+            </ScrollReveal>
+          );
+        })}
+      </div>
     </section>
   );
 }

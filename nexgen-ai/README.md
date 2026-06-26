@@ -2,6 +2,8 @@
 
 Premium, high-converting landing page for an advanced AI-driven data automation platform.
 
+**Live Link:** [https://nexgen-ai-ecru.vercel.app](https://nexgen-ai-ecru.vercel.app)
+
 ## 🎨 Asset Integration
 - **Color Palette** (from `colorPallet.pdf`): Forsythia `#FFC801`, Nocturnal Expedition `#114C5A`, Arctic Powder `#F1F6F4`, Mystic Mint `#D9E8E2`, Deep Saffron `#FF9932`, Oceanic Noir `#172B36`
 - **Fonts** (from `fonts.pdf`): JetBrains Mono (headers/code), Inter (body/UI)
@@ -19,13 +21,13 @@ Premium, high-converting landing page for an advanced AI-driven data automation 
 |---|---|
 | Feature 1 — Dynamic pricing matrix | ✅ Multi-dimensional config object (`PRICING_MATRIX`) |
 | Feature 1 — State isolation | ✅ `useRef` + direct `document.getElementById` DOM text mutations only — zero parent re-renders |
-| Feature 2 — Bento/Accordion | ✅ Desktop bento grid → mobile accordion, zero external UI libs |
-| Feature 2 — Context transfer | ✅ `MediaQueryList` change handler transfers `hoverIndexRef` to accordion on window resize |
+| Feature 2 — Bento/Accordion | ✅ Option-wise accordion used on all devices so user must click options to view details |
+| Feature 2 — State management | ✅ Custom interactive react state transitions with zero external UI libs |
 | Semantic HTML | ✅ `<main>`, `<header>`, `<section>`, `<article>`, `<figure>`, `<figcaption>`, `<blockquote>`, `<nav>`, `<footer>`, `<ul role="list">` |
 | SEO + OG tags | ✅ Full Metadata API, Open Graph, Twitter Card, canonical, robots, JSON-LD structured data |
 | 500ms TTI budget | ✅ Entry animations staggered at 80ms intervals (80→160→240→320ms), all under 500ms |
 | No banned libs | ✅ No Framer Motion, Radix, Shadcn, HeadlessUI in deps |
-| Responsive | ✅ Mobile, tablet, desktop breakpoints; bento → accordion at ≤768px |
+| Responsive | ✅ Mobile, tablet, desktop breakpoints; accordion adapts to all screen sizes |
 | Asset compliance | ✅ All SVGs, brand colors, and both fonts from asset pack integrated |
 | Motion timing | ✅ Micro-interactions: 150–200ms ease-out; layout reflows: 350ms ease-in-out |
 
